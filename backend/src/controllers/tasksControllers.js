@@ -79,24 +79,55 @@ export const createTask = async (req, res) => {
     }
 }
 
+// export const updateTask = async (req, res) => {
+//     // const { id } = req.params;
+//     // res.status(200).json({message: `Nhiệm vụ có id ${id} đã được update thành công.`});
+//     try {
+//         const { title, status, completedAt } = req.body // gọi các biến có thể update
+//         const updateTask = await Task.findByIdAndUpdate(
+//             req.params.id,
+//             { title, status, completedAt }, { new: true }
+//         );
+//         if (!updateTask) {
+//             return res.status(400).json({ message: "Không tìm thấy nhiệm vụ" })
+//         }
+//         res.status(200).json(updateTask)
+
+//     } catch (error) {
+//         console.error("Lỗi khi goi updateTask", error);
+//         res.status(500).json({ message: "Lỗi hệ thống" });
+
+//     }
+// }
+
 export const updateTask = async (req, res) => {
-    // const { id } = req.params;
-    // res.status(200).json({message: `Nhiệm vụ có id ${id} đã được update thành công.`});
     try {
-        const { title, status, completedAt } = req.body // gọi các biến có thể update
+        const { title, status, completedAt } = req.body;
+        const { id } = req.params;
+
+        console.log("UPDATE REQUEST - ID:", id);
+
         const updateTask = await Task.findByIdAndUpdate(
-            req.params.id,
-            { title, status, completedAt }, { new: true }
+            id,
+            { title, status, completedAt }, 
+            { new: true }
         );
+
         if (!updateTask) {
-            return res.status(400).json({ message: "Không tìm thấy nhiệm vụ" })
+            return res.status(404).json({ message: "Không tìm thấy nhiệm vụ" });
         }
-        res.status(200).json(updateTask)
+
+        res.status(200).json(updateTask);
 
     } catch (error) {
-        console.error("Lỗi khi goi updateTask", error);
+        console.error("Lỗi khi gọi updateTask:", error);
+        
+        // Xử lý lỗi ID không hợp lệ
+        if (error.name === 'CastError') {
+            return res.status(400).json({ message: "ID không hợp lệ" });
+        }
+        
         res.status(500).json({ message: "Lỗi hệ thống" });
-
     }
 }
 
