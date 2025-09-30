@@ -23,53 +23,57 @@ const TaskCard = ({ task, index, handleTaskChanged }) => {
     }
   };
 
-  // UPDATE
+  // UPDATE TITLE
+  
   const updateTask = async () => {
     if (!updateTitle.trim()) {
       toast.error("Tiêu đề không được để trống");
       return;
     }
+
     try {
+      console.log("Updating task with ID:", task._id, "Title:", updateTitle);
+
+      await apis.updateTask(task._id,updateTitle,task.status);
       setEditing(false);
-      console.log();
-      const result = await apis.updateTask(task._id, { 
-  title: updateTitle,
-  status: task.status 
-});
-      console.log("Cập nhật thành công task.");
-      toast.success(
-        `Nhiệm vụ ${result ? result.title : "WWWWWWWWW"} cập nhật thành công.`
-      );
+      toast.success("Cập nhật thành công");
       handleTaskChanged();
     } catch (error) {
-      console.error("Lỗi xảy ra khi cập nhật task.", error);
-      toast.error("Lỗi xảy ra khi cập nhật nhiệm vụ mới.");
+      console.error("Lỗi update task:", {
+        taskId: task._id,
+        error: error.message,
+      });
+      toast.error("Lỗi xảy ra khi cập nhật");
     }
   };
 
   // Cập nhật active
+
   const toggleTaskCompleteButton = async () => {
     try {
-      if (task.status === "active") {
-        // await apis.updateTask(task._id, updateTitle, "success");
-        const newStatus = task.status === "active" ? "complete" : "active";
-        const completedAt = newStatus === "complete" ? new Date() : null;
+      const newStatus = task.status === "active" ? "complete" : "active";
+      // const completedAt = newStatus === "complete" ? new Date() : null;
 
-        await apis.updateTask(task._id, {
-          status: newStatus,
-          completedAt: completedAt,
-          title: task.title, // Giữ nguyên title
-        });
-        toast.success(`${task.title} đã hoàn thành.`);
-      } else {
-        await apis.updateTask(task._id, updateTitle, "active");
-        toast.success(`${task.title} đã đổi sang chưa hoàn thành.`);
-      }
+      console.log(
+        "Toggling status for ID:",
+        task._id,
+        "New status:",
+        newStatus
+      );
 
+      await apis.updateTask(task._id, task.title, newStatus);
+      toast.success(
+        `${task.title} đã ${
+          newStatus === "complete" ? "hoàn thành" : "chuyển sang active"
+        }.`
+      );
       handleTaskChanged();
     } catch (error) {
-      console.error("Lỗi xảy ra khi update task.", error);
-      toast.error("Lỗi xảy ra khi cập nhập nhiệm vụ.");
+      console.error("Lỗi toggle status:", {
+        taskId: task._id,
+        error: error.message,
+      });
+      toast.error("Lỗi xảy ra khi cập nhật trạng thái.");
     }
   };
 

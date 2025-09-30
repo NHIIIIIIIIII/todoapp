@@ -38,13 +38,13 @@ export const apis = {
       let completedAt2 = new Date().toISOString()
 
       if (status === 'active') {
-         completedAt2 = null;
+        completedAt2 = null;
       }
       const result = await api.put(`/tasks/${taskId}`, {
         // Bi cần truyền req.body vô chứ
         // Truyền j đây, truyền nhưng nó lấy ở đâu ?  , từ tham số lấy xuống
         //  Bi thích lát đổi tên j cũng được
-        title, status,
+        title: title, status: status,
         // Tiện đây mình để completedAt ở đây luôn, đỡ phải truyền props, hoặc nếu logic thì đây
         // Z cho Bi dễ hiểu ha
         completedAt: completedAt2
