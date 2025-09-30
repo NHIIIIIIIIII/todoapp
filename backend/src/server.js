@@ -18,6 +18,7 @@ logger: in ra thông tin request, response, và thời gian xử lý.
 auth: kiểm tra token người dùng hợp lệ > nếu hợp lệ > cho phép tiếp tục xử lý request, nếu không > trả về lỗi.
 */
 
+//deploy 
 if (process.env.NODE_ENV !== "production") {
   app.use(cors({ origin: "http://localhost:5173" }));
 }
